@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '/main.css'; // Para incluir los estilos personalizados
+import { Form, Button, Card, Container, ProgressBar } from 'react-bootstrap';
+import bgImage from '/src/assets/banner2.jpg';
+import logo from '/src/assets/logo1.png';
 
 function RegisterEmployee() {
   const [step, setStep] = useState(1);
@@ -18,10 +20,7 @@ function RegisterEmployee() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -32,15 +31,11 @@ function RegisterEmployee() {
       try {
         const response = await fetch('http://localhost:3000/auth/registerEmployee', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
         });
 
         if (response.ok) {
-          const data = await response.json();
-          console.log(data);
           navigate('/');
         } else {
           const errorText = await response.text();
@@ -57,114 +52,81 @@ function RegisterEmployee() {
     }
   };
 
+  const handleBack = () => {
+    setStep(1);
+  };
+
+  const handleGoToAdmin = () => {
+    navigate('/admin/pedidos');
+  };
+
   return (
-    <div className="Employee-container">
-      <div className="overlay">
-        <h2 className="mb-4 text-center">Registro de Empleado</h2>
-        <form onSubmit={handleSubmit} className="form-container">
-          {/* Paso 1: Datos Personales */}
-          {step === 1 && (
-            <>
-              <div className="mb-3">
-                <label className="form-label">Nombre:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="nombre"
-                  value={formData.nombre}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+    <div className="register-container d-flex justify-content-center align-items-center vh-100" 
+         style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
+      <Container>
+        <Card className="shadow-lg p-3" style={{ maxWidth: '400px', margin: 'auto', borderRadius: '15px', backgroundColor: 'rgba(255, 248, 220, 0.95)' }}>
+          <Card.Body>
+            <div className="text-center">
+              <img src={logo} alt="Logo" style={{ width: '80px', marginBottom: '10px' }} />
+              <h3 className="text-brown fw-bold" style={{ fontSize: '1.5rem' }}>Registro de Empleado</h3>
+              <p className="text-muted" style={{ fontSize: '0.9rem' }}>¡Crea una cuenta para gestionar tu perfil!</p>
+            </div>
 
-              <div className="mb-3">
-                <label className="form-label">Apellido Paterno:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="apellido_paterno"
-                  value={formData.apellido_paterno}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <ProgressBar now={step === 1 ? 50 : 100} variant="warning" className="mb-2" />
 
-              <div className="mb-3">
-                <label className="form-label">Apellido Materno:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="apellido_materno"
-                  value={formData.apellido_materno}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <Form onSubmit={handleSubmit}>
+              {step === 1 && (
+                <>
+                  <Form.Group className="mb-2">
+                    <Form.Label style={{ fontSize: '0.9rem' }}>Nombre</Form.Label>
+                    <Form.Control type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
+                  </Form.Group>
+                  <Form.Group className="mb-2">
+                    <Form.Label style={{ fontSize: '0.9rem' }}>Apellido Paterno</Form.Label>
+                    <Form.Control type="text" name="apellido_paterno" value={formData.apellido_paterno} onChange={handleChange} required />
+                  </Form.Group>
+                  <Form.Group className="mb-2">
+                    <Form.Label style={{ fontSize: '0.9rem' }}>Apellido Materno</Form.Label>
+                    <Form.Control type="text" name="apellido_materno" value={formData.apellido_materno} onChange={handleChange} required />
+                  </Form.Group>
+                  <Form.Group className="mb-2">
+                    <Form.Label style={{ fontSize: '0.9rem' }}>Fecha de Nacimiento</Form.Label>
+                    <Form.Control type="date" name="fecha_nacimiento" value={formData.fecha_nacimiento} onChange={handleChange} required />
+                  </Form.Group>
+                  <Form.Group className="mb-2">
+                    <Form.Label style={{ fontSize: '0.9rem' }}>Dirección</Form.Label>
+                    <Form.Control type="text" name="direccion" value={formData.direccion} onChange={handleChange} required />
+                  </Form.Group>
+                </>
+              )}
 
-              <div className="mb-3">
-                <label className="form-label">Fecha de Nacimiento:</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  name="fecha_nacimiento"
-                  value={formData.fecha_nacimiento}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+              {step === 2 && (
+                <>
+                  <Form.Group className="mb-2">
+                    <Form.Label style={{ fontSize: '0.9rem' }}>Correo Electrónico</Form.Label>
+                    <Form.Control type="email" name="correo" value={formData.correo} onChange={handleChange} required />
+                  </Form.Group>
+                  <Form.Group className="mb-2">
+                    <Form.Label style={{ fontSize: '0.9rem' }}>Contraseña</Form.Label>
+                    <Form.Control type="password" name="contraseña" value={formData.contraseña} onChange={handleChange} required />
+                  </Form.Group>
+                  <Button variant="secondary" onClick={handleBack} className="w-100 fw-bold rounded-pill mb-2" style={{ fontSize: '0.9rem' }}>
+                    Regresar
+                  </Button>
+                </>
+              )}
 
-              <div className="mb-3">
-                <label className="form-label">Dirección:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="direccion"
-                  value={formData.direccion}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </>
-          )}
+              <Button variant="warning" type="submit" className="w-100 fw-bold text-white rounded-pill mb-2" style={{ fontSize: '0.9rem' }}>
+                {step === 1 ? 'Continuar' : 'Registrar'}
+              </Button>
 
-          {step === 2 && (
-            <>
-              <div className="mb-3">
-                <label className="form-label">Correo Electrónico:</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="correo"
-                  value={formData.correo}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Contraseña:</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  name="contraseña"
-                  value={formData.contraseña}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-            </>
-          )}
-
-          <button type="submit" className="btn btn-primary w-100">
-            {step === 1 ? 'Continuar' : 'Registrar'}
-          </button>
-        </form>
-
-        <div className="progress-dots">
-          <span className={`dot ${step === 1 ? 'active' : ''}`}></span>
-          <span className={`dot ${step === 2 ? 'active' : ''}`}></span>
-        </div>
-      </div>
+              <Button variant="danger" onClick={handleGoToAdmin} className="w-100 fw-bold text-white rounded-pill" style={{ fontSize: '0.9rem' }}>
+                Volver a Admin
+              </Button>
+            </Form>
+          </Card.Body>
+        </Card>
+      </Container>
     </div>
   );
 }

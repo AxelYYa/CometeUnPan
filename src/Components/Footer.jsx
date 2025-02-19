@@ -1,19 +1,18 @@
-
 import React from "react";
+import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa";
 
 const FooterComponent = () => {
   return (
-    <footer className="bg-dark text-white py-4 mt-auto">
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12 text-center">
-            <p className="mb-0">&copy; {new Date().getFullYear()}  Symphony - Music Store</p>
-            <nav className="mt-2">
-              <a href="#" className="text-white mx-3 text-decoration-none hover-underline">Sobre Nosotros</a>
-              <a href="#" className="text-white mx-3 text-decoration-none hover-underline">Contacto</a>
-              <a href="#" className="text-white mx-3 text-decoration-none hover-underline">Términos y Condiciones</a>
-            </nav>
-          </div>
+    <footer className="text-white py-4 mt-auto shadow-lg" style={{ backgroundColor: "#5D4037" }}>
+      <div className="container text-center">
+        
+        {/* Logo y Nombre */}
+        <h4 className="fw-bold">Comete Un Pan</h4>
+        <p className="small">El mejor pan recién horneado, todos los días.</p>
+
+        {/* Copyright */}
+        <div className="mt-3">
+          <p className="mb-0 small">&copy; {new Date().getFullYear()} Comete Un Pan - Todos los derechos reservados</p>
         </div>
       </div>
     </footer>

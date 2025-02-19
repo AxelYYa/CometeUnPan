@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Card, Container, Row, Col } from 'react-bootstrap';
 import Navbar from '/src/Components/Navbar';
 import FooterComponent from '/src/Components/Footer';
 import MapRoute from '/src/Components/MapRoute';
 
-const defaultCenter = { lat: 25.53845653120954, lng: -103.45535531993444 };
-
 const DeliveryDashboard = () => {
   const [pedidos, setPedidos] = useState([]);
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
   const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
   const [showSeguimiento, setShowSeguimiento] = useState(false);
 
@@ -151,99 +149,112 @@ const DeliveryDashboard = () => {
   };
 
   return (
-    <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
+    <div className="d-flex flex-column" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       <Navbar />
-      <div className="container mt-5 flex-grow-1">
-        <h2 className="mb-4 text-center text-info fw-bold">Panel de Repartidor</h2>
-        <div className="row">
+      <Container className="my-5 flex-grow-1">
+        <h2 className="mb-4 text-center fw-bold" style={{ fontFamily: 'Pacifico, cursive', color: '#D4AF37', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+          Panel de Repartidor
+        </h2>
+        <Row className="g-4">
           {Array.isArray(pedidos) && pedidos.map(pedido => (
-            <div key={pedido.id} className="col-md-4 mb-4">
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h5 className="card-title">{pedido.cliente?.persona ? `${pedido.cliente.persona.nombre} ${pedido.cliente.persona.apellido_paterno}` : 'Cliente desconocido'}</h5> {/* Verificación de seguridad */}
-                  <p className="card-text">{pedido.direccion}</p>
-                  <span className={`badge ${getEstadoColor(pedido.estado_envio)}`}>
-                    {pedido.estado_envio}
-                  </span>
-                </div>
-                <div className="card-footer text-center">
+            <Col key={pedido.id} xs={12} sm={6} md={4}>
+              <Card className="shadow-lg rounded" style={{ border: 'none', backgroundColor: '#f4e1d2' }}>
+                <Card.Body>
+                  <Card.Title className="text-center fw-bold" style={{ fontFamily: 'Pacifico, cursive', color: '#8B4513' }}>
+                    {pedido.cliente?.persona ? `${pedido.cliente.persona.nombre} ${pedido.cliente.persona.apellido_paterno}` : 'Cliente desconocido'}
+                  </Card.Title>
+                  <Card.Text className="text-center text-muted">
+                    {pedido.direccion}
+                  </Card.Text>
+                  <div className="text-center">
+                    <span className={`badge bg-${getEstadoColor(pedido.estado_envio)}`}>
+                      {pedido.estado_envio}
+                    </span>
+                  </div>
+                </Card.Body>
+                <Card.Footer className="text-center">
                   {pedido.estado_envio === 'En Proceso' && (
                     <div className="d-flex justify-content-between">
-                      <button
-                        className="btn btn-success btn-sm"
+                      <Button
+                        variant="outline-success"
                         onClick={() => aceptarPedido(pedido.id)}
+                        style={{ borderRadius: '20px', borderColor: '#4CAF50', color: '#4CAF50' }}
                       >
                         Aceptar
-                      </button>
-                      <button
-                        className="btn btn-info btn-sm text-white"
+                      </Button>
+                      <Button
+                        variant="outline-info"
                         onClick={() => verDetalles(pedido)}
+                        style={{ borderRadius: '20px', borderColor: '#17a2b8', color: '#17a2b8' }}
                       >
                         Ver Detalles
-                      </button>
+                      </Button>
                     </div>
                   )}
                   {pedido.estado_envio === 'En Camino' && (
                     <div className="d-flex justify-content-between">
-                      <button
-                        className="btn btn-danger btn-sm"
+                      <Button
+                        variant="outline-danger"
                         onClick={() => rechazarPedido(pedido.id)}
+                        style={{ borderRadius: '20px', borderColor: '#F44336', color: '#F44336' }}
                       >
                         Denegar
-                      </button>
-                      <button
-                        className="btn btn-info btn-sm text-white"
+                      </Button>
+                      <Button
+                        variant="outline-info"
                         onClick={() => verDetalles(pedido)}
+                        style={{ borderRadius: '20px', borderColor: '#17a2b8', color: '#17a2b8' }}
                       >
                         Ver Detalles
-                      </button>
-                      <button
-                        className="btn btn-primary btn-sm"
+                      </Button>
+                      <Button
+                        variant="outline-primary"
                         onClick={() => abrirSeguimiento(pedido)}
+                        style={{ borderRadius: '20px', borderColor: '#007bff', color: '#007bff' }}
                       >
                         Ver Recorrido
-                      </button>
-                      <button
-                        className="btn btn-warning btn-sm"
+                      </Button>
+                      <Button
+                        variant="outline-warning"
                         onClick={() => marcarComoEnPuerta(pedido.id)}
+                        style={{ borderRadius: '20px', borderColor: '#ffc107', color: '#ffc107' }}
                       >
                         Por Entregar
-                      </button>
+                      </Button>
                     </div>
                   )}
                   {pedido.estado_envio === 'En Puerta' && (
-                    <div className="d-flex justify-content-between">
-                      <button
-                        className="btn btn-success btn-sm"
-                        onClick={() => entregarPedido(pedido.id)}
-                      >
-                        Marcar como Entregado
-                      </button>
-                    </div>
+                    <Button
+                      variant="outline-success"
+                      onClick={() => entregarPedido(pedido.id)}
+                      style={{ borderRadius: '20px', borderColor: '#4CAF50', color: '#4CAF50' }}
+                    >
+                      Marcar como Entregado
+                    </Button>
                   )}
                   {pedido.estado_envio === 'Entregado' && (
                     <div className="alert alert-success mt-2">
                       Pedido entregado
                     </div>
                   )}
-                </div>
-              </div>
-            </div>
+                </Card.Footer>
+              </Card>
+            </Col>
           ))}
-        </div>
+        </Row>
 
         {/* Modal para mostrar los detalles del pedido */}
         <Modal show={showModal} onHide={cerrarModal} centered size="lg">
-          <Modal.Header closeButton className="bg-primary text-white">
-            <Modal.Title>Detalles del Pedido</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: '#8B4513', color: '#fff' }}>
+            <Modal.Title style={{ fontFamily: 'Pacifico, cursive' }}>Detalles del Pedido</Modal.Title>
           </Modal.Header>
-          <Modal.Body className="p-4 bg-light">
+          <Modal.Body className="p-4" style={{ backgroundColor: '#f4e1d2' }}>
             <div className="d-flex flex-wrap justify-content-start">
               {pedidoSeleccionado?.detalles.map((detalle, index) => (
                 <div
                   key={index}
                   className="d-flex align-items-center border rounded p-3 me-3 mb-3 shadow-sm"
-                  style={{ minWidth: "250px", maxWidth: "300px", backgroundColor: "#f8f9fa" }}
+                  style={{ minWidth: "250px", maxWidth: "300px", backgroundColor: "#fff" }}
                 >
                   {detalle.producto && (
                     <>
@@ -265,13 +276,13 @@ const DeliveryDashboard = () => {
               ))}
             </div>
           </Modal.Body>
-          <Modal.Footer className="bg-primary text-white">
+          <Modal.Footer style={{ backgroundColor: '#8B4513', color: '#fff' }}>
             <div className="w-100 d-flex justify-content-between align-items-center">
               <div>
                 <p className="fw-bold mb-1">Total de productos: {pedidoSeleccionado?.detalles.reduce((acc, p) => acc + p.cantidad, 0)}</p>
                 <p className="fw-bold mb-1">Total: ${pedidoSeleccionado?.detalles.reduce((acc, p) => acc + (p.cantidad * p.precio), 0).toFixed(2)}</p>
               </div>
-              <Button variant="secondary" onClick={cerrarModal} className="text-white">
+              <Button variant="secondary" onClick={cerrarModal} style={{ borderRadius: '20px' }}>
                 Cerrar
               </Button>
             </div>
@@ -280,19 +291,19 @@ const DeliveryDashboard = () => {
 
         {/* Modal de Seguimiento */}
         <Modal show={showSeguimiento} onHide={cerrarSeguimiento} centered>
-          <Modal.Header closeButton className="bg-info text-white">
-            <Modal.Title>Seguimiento del Pedido #{pedidoSeleccionado?.id}</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: '#4CAF50', color: '#fff' }}>
+            <Modal.Title style={{ fontFamily: 'Pacifico, cursive' }}>Seguimiento del Pedido #{pedidoSeleccionado?.id}</Modal.Title>
           </Modal.Header>
-          <Modal.Body className="p-4 bg-light">
+          <Modal.Body className="p-4" style={{ backgroundColor: '#f4e1d2' }}>
             <MapRoute destination={pedidoSeleccionado?.direccion} />
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={cerrarSeguimiento}>
+          <Modal.Footer style={{ backgroundColor: '#4CAF50', color: '#fff' }}>
+            <Button variant="secondary" onClick={cerrarSeguimiento} style={{ borderRadius: '20px' }}>
               Cerrar
             </Button>
           </Modal.Footer>
         </Modal>
-      </div>
+      </Container>
       <FooterComponent />
     </div>
   );

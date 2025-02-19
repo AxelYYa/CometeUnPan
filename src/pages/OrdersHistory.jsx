@@ -75,16 +75,20 @@ function HistorialPedidos() {
   };
 
   return (
-    <div className="d-flex flex-column" style={{ minHeight: '100vh' }}>
+    <div className="d-flex flex-column" style={{ minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       <NavbarComponent />
       <Container className="my-5">
-        <h2 className="text-center text-info fw-bold">Historial de Pedidos</h2>
+        <h2 className="text-center fw-bold" style={{ fontFamily: 'Pacifico, cursive', color: '#D4AF37', textShadow: '2px 2px 4px rgba(0, 0, 0, 0.3)' }}>
+          Historial de Pedidos
+        </h2>
         <Row className="g-4 mt-4">
           {pedidos.map((pedido) => (
             <Col xs={12} sm={6} md={4} key={pedido.id}>
-              <Card className="shadow-lg">
+              <Card className="shadow-lg rounded" style={{ border: 'none', backgroundColor: '#f4e1d2' }}>
                 <Card.Body>
-                  <Card.Title className="text-center fw-bold">Pedido #{pedido.id}</Card.Title>
+                  <Card.Title className="text-center fw-bold" style={{ fontFamily: 'Pacifico, cursive', color: '#8B4513' }}>
+                    Pedido #{pedido.id}
+                  </Card.Title>
                   <Card.Text className="text-center text-muted">
                     <strong>Fecha:</strong> {new Date(pedido.fecha_realizacion).toLocaleDateString()}
                   </Card.Text>
@@ -93,12 +97,22 @@ function HistorialPedidos() {
                       {pedido.estado_envio}
                     </span>
                   </Card.Text>
-                  <Card.Text className="text-center fw-bold text-primary">Total: ${pedido.detalles.reduce((acc, detalle) => acc + (detalle.cantidad * detalle.precio), 0).toFixed(2)}</Card.Text>
+                  <Card.Text className="text-center fw-bold" style={{ color: '#8B4513' }}>
+                    Total: ${pedido.detalles.reduce((acc, detalle) => acc + (detalle.cantidad * detalle.precio), 0).toFixed(2)}
+                  </Card.Text>
                   <div className="d-flex justify-content-around">
-                    <Button className="text-white" variant="info" onClick={() => abrirModal(pedido)}>
+                    <Button 
+                      variant="outline-brown" 
+                      onClick={() => abrirModal(pedido)}
+                      style={{ borderRadius: '20px', borderColor: '#8B4513', color: '#8B4513' }}
+                    >
                       Ver Detalles
                     </Button>
-                    <Button variant="primary" onClick={() => abrirSeguimiento(pedido)}>
+                    <Button 
+                      variant="outline-success" 
+                      onClick={() => abrirSeguimiento(pedido)}
+                      style={{ borderRadius: '20px', borderColor: '#4CAF50', color: '#4CAF50' }}
+                    >
                       Ver Seguimiento
                     </Button>
                   </div>
@@ -110,16 +124,16 @@ function HistorialPedidos() {
 
         {/* Modal de Detalles del Pedido */}
         <Modal show={showModal} onHide={cerrarModal} centered size="lg">
-          <Modal.Header closeButton className="bg-primary text-white">
-            <Modal.Title>Detalles del Pedido</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: '#8B4513', color: '#fff' }}>
+            <Modal.Title style={{ fontFamily: 'Pacifico, cursive' }}>Detalles del Pedido</Modal.Title>
           </Modal.Header>
-          <Modal.Body className="p-4 bg-light">
+          <Modal.Body className="p-4" style={{ backgroundColor: '#f4e1d2' }}>
             <div className="d-flex flex-wrap justify-content-start">
               {pedidoSeleccionado?.detalles.map((detalle, index) => (
                 <div
                   key={index}
                   className="d-flex align-items-center border rounded p-3 me-3 mb-3 shadow-sm"
-                  style={{ minWidth: "250px", maxWidth: "300px", backgroundColor: "#f8f9fa" }}
+                  style={{ minWidth: "250px", maxWidth: "300px", backgroundColor: "#fff" }}
                 >
                   {detalle.producto && (
                     <>
@@ -141,13 +155,13 @@ function HistorialPedidos() {
               ))}
             </div>
           </Modal.Body>
-          <Modal.Footer className="bg-primary text-white">
+          <Modal.Footer style={{ backgroundColor: '#8B4513', color: '#fff' }}>
             <div className="w-100 d-flex justify-content-between align-items-center">
               <div>
                 <p className="fw-bold mb-1">Total de productos: {pedidoSeleccionado?.detalles.reduce((acc, p) => acc + p.cantidad, 0)}</p>
                 <p className="fw-bold mb-1">Total: ${pedidoSeleccionado?.detalles.reduce((acc, p) => acc + (p.cantidad * p.precio), 0).toFixed(2)}</p>
               </div>
-              <Button variant="secondary" onClick={cerrarModal} className="text-white">
+              <Button variant="secondary" onClick={cerrarModal} style={{ borderRadius: '20px' }}>
                 Cerrar
               </Button>
             </div>
@@ -156,17 +170,25 @@ function HistorialPedidos() {
 
         {/* Modal de Seguimiento */}
         <Modal show={showSeguimiento} onHide={cerrarSeguimiento} centered>
-          <Modal.Header closeButton className="bg-info text-white">
-            <Modal.Title>Seguimiento del Pedido #{pedidoSeleccionado?.id}</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: '#4CAF50', color: '#fff' }}>
+            <Modal.Title style={{ fontFamily: 'Pacifico, cursive' }}>Seguimiento del Pedido #{pedidoSeleccionado?.id}</Modal.Title>
           </Modal.Header>
-          <Modal.Body className="p-4 bg-light">
-            <h5 className="text-center fw-bold">Estado: {pedidoSeleccionado?.estado_envio}</h5>
-            <ProgressBar animated now={getProgreso(pedidoSeleccionado?.estado_envio)} label={`${getProgreso(pedidoSeleccionado?.estado_envio)}%`} className="mt-3" />
-            <p className="text-center mt-3">{getProgreso(pedidoSeleccionado?.estado_envio) === 100 ? "Pedido Entregado" : "Pedido en proceso..."}</p>
+          <Modal.Body className="p-4" style={{ backgroundColor: '#f4e1d2' }}>
+            <h5 className="text-center fw-bold" style={{ color: '#8B4513' }}>Estado: {pedidoSeleccionado?.estado_envio}</h5>
+            <ProgressBar 
+              animated 
+              now={getProgreso(pedidoSeleccionado?.estado_envio)} 
+              label={`${getProgreso(pedidoSeleccionado?.estado_envio)}%`} 
+              className="mt-3" 
+              style={{ height: '20px', borderRadius: '10px' }}
+            />
+            <p className="text-center mt-3" style={{ color: '#8B4513' }}>
+              {getProgreso(pedidoSeleccionado?.estado_envio) === 100 ? "Pedido Entregado" : "Pedido en proceso..."}
+            </p>
             <MapRoute destination={pedidoSeleccionado?.direccion} />
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={cerrarSeguimiento}>
+          <Modal.Footer style={{ backgroundColor: '#4CAF50', color: '#fff' }}>
+            <Button variant="secondary" onClick={cerrarSeguimiento} style={{ borderRadius: '20px' }}>
               Cerrar
             </Button>
           </Modal.Footer>

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import NavbarComponent from "/src/Components/Navbar";
+import NavbarComponent from "/src/Components/NavBarAdmin";
 import FooterComponent from "/src/Components/Footer";
+import "/main.css";
+import { FaBreadSlice, FaShoppingBasket, FaTruck, FaCheckCircle } from "react-icons/fa"; // Íconos temáticos
 
 const estados = ["Pendiente", "En Proceso", "En Camino", "Entregado"];
 const estadoColores = {
   "Pendiente": "bg-warning text-white",
-  "En Proceso": "bg-primary",
-  "En Camino": "bg-warning text-white",
-  "Entregado": "bg-success",
+  "En Proceso": "bg-primary text-white",
+  "En Camino": "bg-info text-white",
+  "Entregado": "bg-success text-white",
 };
 
 const AdminDashboard = () => {
@@ -63,32 +65,42 @@ const AdminDashboard = () => {
   const totalPrecio = detallesPedido.reduce((acc, producto) => acc + (producto.cantidad * producto.precio), 0);
 
   return (
-    <div className="d-flex flex-column min-vh-100 bg-light">
+    <div className="d-flex flex-column min-vh-100 bg-light" style={{ backgroundImage: "url('/ruta/a/imagen-de-fondo-panaderia.jpg')", backgroundSize: "cover" }}>
       <NavbarComponent />
-      <nav className="container mt-3">
-        <ul className="nav nav-pills justify-content-center">
-          <li className="nav-item"><Link to="/pedidos" className="nav-link active">Pedidos</Link></li>
-          <li className="nav-item"><Link to="/admin/createproducts" className="nav-link">Agregar Productos</Link></li>
-          <li className="nav-item"><Link to="/registroempleado" className="nav-link">Registrar Empleados</Link></li>
-        </ul>
-      </nav>
       <main className="flex-grow-1 container mt-4">
-        <h2 className="text-center mb-4 text-primary">Panel de Administrador</h2>
+        <h2 className="text-center mb-4" style={{ fontFamily: "'Pacifico', cursive", textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)", color: "#6F4E37" }}>
+          <FaBreadSlice className="me-2" /> Panel de Administrador - Panadería Dulce Hogar
+        </h2>
         <div className="row">
           {pedidos.map((pedido) => (
             <div key={pedido.id} className="col-md-4 mb-4">
-              <div className="card shadow-lg rounded border-0">
+              <div className="card shadow-lg rounded border-0" style={{ backgroundColor: "rgba(255, 255, 255, 0.9)" }}>
                 <div className="card-body">
-                  <h5 className="card-title fw-bold text-dark">{pedido.cliente.nombre}</h5>
+                  <h5 className="card-title fw-bold text-dark">
+                    <FaShoppingBasket className="me-2" /> {pedido.cliente.nombre}
+                  </h5>
                   <p className="card-text text-muted">{pedido.direccion}</p>
-                  <p className="card-text"><small className="text-secondary">Fecha: {new Date(pedido.fecha_realizacion).toLocaleDateString()}</small></p>
-                  <p className="card-text">Repartidor: <strong>{pedido.repartidor ? pedido.repartidor.nombre : 'Sin asignar'}</strong></p>
-                  <span className={`badge py-2 px-3 ${estadoColores[pedido.estado_envio]}`}>{pedido.estado_envio}</span>
+                  <p className="card-text">
+                    <small className="text-secondary">
+                      <FaBreadSlice className="me-1" /> Fecha: {new Date(pedido.fecha_realizacion).toLocaleDateString()}
+                    </small>
+                  </p>
+                  <p className="card-text">
+                    <FaTruck className="me-2" /> Repartidor: <strong>{pedido.repartidor ? pedido.repartidor.nombre : 'Sin asignar'}</strong>
+                  </p>
+                  <span className={`badge py-2 px-3 ${estadoColores[pedido.estado_envio]}`}>
+                    {pedido.estado_envio === "Entregado" && <FaCheckCircle className="me-1" />}
+                    {pedido.estado_envio}
+                  </span>
                 </div>
                 <div className="card-footer text-center bg-white border-0">
-                  <button className="btn btn-info btn-sm me-2 text-white" onClick={() => verDetalles(pedido.detalles)}>Ver Detalles</button>
+                  <button className="btn btn-info btn-sm me-2 text-white" onClick={() => verDetalles(pedido.detalles)}>
+                    <FaBreadSlice className="me-1" /> Ver Detalles
+                  </button>
                   {pedido.estado_envio === "Pendiente" && (
-                    <button className="btn btn-success btn-sm" onClick={() => procesarPedido(pedido.id)}>Procesar Pedido</button>
+                    <button className="btn btn-success btn-sm" onClick={() => procesarPedido(pedido.id)}>
+                      <FaCheckCircle className="me-1" /> Procesar Pedido
+                    </button>
                   )}
                 </div>
               </div>
@@ -96,8 +108,10 @@ const AdminDashboard = () => {
           ))}
         </div>
         <Modal show={showModal} onHide={cerrarModal} centered size="lg">
-          <Modal.Header closeButton className="bg-primary text-white">
-            <Modal.Title>Detalles del Pedido</Modal.Title>
+          <Modal.Header closeButton style={{ backgroundColor: "#6F4E37", color: "white" }}>
+            <Modal.Title>
+              <FaBreadSlice className="me-2" /> Detalles del Pedido
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body className="p-4 bg-light">
             <div className="d-flex flex-wrap justify-content-start">
@@ -119,13 +133,13 @@ const AdminDashboard = () => {
               ))}
             </div>
           </Modal.Body>
-          <Modal.Footer className="bg-primary text-white">
+          <Modal.Footer style={{ backgroundColor: "#6F4E37", color: "white" }}>
             <div className="w-100 d-flex justify-content-between align-items-center">
               <div>
                 <p className="fw-bold mb-1">Total de productos: {totalCantidad}</p>
                 <p className="fw-bold mb-1">Total: ${totalPrecio.toFixed(2)}</p>
               </div>
-              <Button variant="secondary" onClick={cerrarModal} className="text-white" style={{ backgroundColor: "#0056b3", borderColor: "#0056b3" }}>
+              <Button variant="secondary" onClick={cerrarModal} style={{ backgroundColor: "#8B7355", borderColor: "#8B7355", color: "white" }}>
                 Cerrar
               </Button>
             </div>

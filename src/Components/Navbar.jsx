@@ -9,47 +9,56 @@ const Navbar = ({ cart = {} }) => {
   const cartItemCount = Object.values(cart).reduce((acc, count) => acc + count, 0);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: '#0000' }}>
-      <div className="container-fluid">
-        <div className="row w-100 align-items-center">
-          <div className="col-4 d-flex justify-content-start">
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span className="navbar-toggler-icon"></span>
-            </button>
-          </div>
-          <div className="col-4 d-flex justify-content-center">
-            <Link className="navbar-brand" to="/">
-              <img src={logo} alt="Logo" style={{ height: '80px' }} />
-            </Link>
-          </div>
-          <div className="col-4 d-flex justify-content-end">
-            <ul className="navbar-nav d-flex align-items-center gap-3">
-              <li className="nav-item">
-                <Link className="nav-link active" to="/">Inicio</Link>
-              </li>
-              {token ? (
-                <>
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/ordershistory">Historial de Pedidos</Link>
-                  </li>
-                  <li className="nav-item">
-                    <LogoutButton />
-                  </li>
-                </>
-              ) : (
+    <nav className="navbar navbar-expand-lg shadow" style={{ backgroundColor: '#F5E1C8', padding: '15px 30px' }}>
+      <div className="container-fluid d-flex align-items-center justify-content-between">
+        
+        {/* Logo a la izquierda */}
+        <div className="d-flex align-items-center">
+          <Link className="navbar-brand" to="/">
+            <img src={logo} alt="Logo" style={{ height: '100px' }} />
+          </Link>
+        </div>
+
+        {/* Menú centrado */}
+        <div className="d-flex flex-grow-1 justify-content-center">
+          <ul className="navbar-nav d-flex align-items-center gap-4">
+            <li className="nav-item">
+              <Link className="nav-link text-dark fw-bold fs-5" to="/">Inicio</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-dark fw-bold fs-5" to="/catalogo">Catálogo</Link>
+            </li>
+            {token ? (
+              <>
                 <li className="nav-item">
-                  <Link className="btn btn-primary btn-sm text-white" to="/login" style={{ padding: '5px 10px', fontSize: '14px' }}>Iniciar Sesión</Link>
+                  <Link className="nav-link text-dark fw-bold fs-5" to="/ordershistory">Historial de Pedidos</Link>
                 </li>
-              )}
+                <li className="nav-item">
+                  <LogoutButton />
+                </li>
+              </>
+            ) : (
               <li className="nav-item">
-                <Link className="nav-link" to="/cart">
-                  <FaShoppingCart />
-                  {cartItemCount > 0 && <span className="badge bg-danger">{cartItemCount}</span>}
+                <Link className="btn btn-warning text-dark fw-bold fs-5 px-4 py-2" to="/login" style={{ borderRadius: '20px' }}>
+                  Iniciar Sesión
                 </Link>
               </li>
-            </ul>
-          </div>
+            )}
+          </ul>
         </div>
+
+        {/* Carrito alineado a la derecha */}
+        <div className="d-flex align-items-center">
+          <Link className="nav-link position-relative text-dark" to="/cart">
+            <FaShoppingCart size={28} />
+            {cartItemCount > 0 && (
+              <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {cartItemCount}
+              </span>
+            )}
+          </Link>
+        </div>
+
       </div>
     </nav>
   );

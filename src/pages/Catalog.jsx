@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Button, Row, Col, Form, Pagination } from 'react-bootstrap';
-import NavbarComponent from '/src/Components/Navbar';
-import '/main.css';
+import React, { useState, useEffect } from "react";
+import { Card, Button, Row, Col, Form, Pagination } from "react-bootstrap";
+import NavbarComponent from "/src/Components/Navbar";
+import { FaShoppingCart, FaMinus, FaPlus } from "react-icons/fa";
+import "/main.css";
 
 function Catalogo() {
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('cart');
+    const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : {};
   });
   const [items, setItems] = useState([]);
@@ -16,16 +17,15 @@ function Catalogo() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await fetch('http://localhost:3000/productos');
+        const response = await fetch("http://localhost:3000/productos");
         const data = await response.json();
-        // Sincronizar las cantidades de los productos con el carrito
-        const updatedItems = data.map(item => ({
+        const updatedItems = data.map((item) => ({
           ...item,
-          quantity: cart[item.id] || 0
+          quantity: cart[item.id] || 0,
         }));
         setItems(updatedItems);
       } catch (error) {
-        console.error('Error fetching productos:', error);
+        console.error("Error fetching productos:", error);
       }
     };
 
@@ -34,33 +34,28 @@ function Catalogo() {
 
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value);
-    setCurrentPage(1); // Reset to first page when category changes
+    setCurrentPage(1);
   };
 
   const handleQuantityChange = (id, amount) => {
-    setItems((prevItems) => {
-      return prevItems.map((item) => {
-        if (item.id === id) {
-          const newQuantity = (item.quantity || 0) + amount;
-          return { ...item, quantity: Math.max(0, Math.min(newQuantity, 3)) };
-        }
-        return item;
-      });
-    });
+    setItems((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id
+          ? { ...item, quantity: Math.max(0, Math.min(item.quantity + amount, 3)) }
+          : item
+      )
+    );
   };
 
   const handleAddToCart = (id) => {
     setCart((prevCart) => {
       const item = items.find((item) => item.id === id);
-      if (item && item.quantity > 0) {
-        return { ...prevCart, [id]: item.quantity };
-      }
-      return prevCart;
+      return item && item.quantity > 0 ? { ...prevCart, [id]: item.quantity } : prevCart;
     });
   };
 
   useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
   const handlePageChange = (pageNumber) => {
@@ -68,73 +63,78 @@ function Catalogo() {
   };
 
   const filteredItems = selectedCategory
-    ? items.filter(item => item.categoria && item.categoria.nombre === selectedCategory)
+    ? items.filter((item) => item.categoria && item.categoria.nombre === selectedCategory)
     : items;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredItems.slice(indexOfFirstItem, indexOfLastItem);
-
   const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
-
-  const uniqueCategories = [...new Set(items.map(item => item.categoria && item.categoria.nombre).filter(Boolean))];
+  const uniqueCategories = [...new Set(items.map((item) => item.categoria?.nombre).filter(Boolean))];
 
   return (
     <div>
       <NavbarComponent cart={cart} />
       <div className="container my-5">
-        <h2 className="mb-4 text-center text-info fw-bold">Catálogo de Productos</h2>
+        <h2 className="mb-4 text-center text-warning fw-bold text-uppercase">
+          <FaShoppingCart className="me-2" /> Catálogo de Productos
+        </h2>
 
-        <Form.Group controlId="categorySelect" className="mb-4">
-          <Form.Label className="h5">Filtrar por Categoría</Form.Label>
-          <Form.Control 
-            as="select" 
-            value={selectedCategory} 
-            onChange={handleCategoryChange} 
-            className="form-control-lg shadow-sm"
+        {/* Filtrar por Categoría */}
+        <Form.Group controlId="categorySelect" className="mb-4 text-center">
+          <Form.Label className="h5 fw-bold">Filtrar por Categoría</Form.Label>
+          <Form.Select
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+            className="form-select-lg shadow-sm border-warning"
           >
             <option value="">Todas las categorías</option>
-            {uniqueCategories.map(category => (
-              <option key={category} value={category}>{category}</option>
+            {uniqueCategories.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
             ))}
-          </Form.Control>
+          </Form.Select>
         </Form.Group>
 
+        {/* Productos */}
         <Row xs={1} sm={2} md={3} lg={4} className="g-4">
           {currentItems.map((item) => (
             <Col key={item.id}>
-              <Card className="shadow-lg rounded card-equal-height">
-                <Card.Img variant="top" src={item.imagepath} className="card-img-top" />
-                <Card.Body>
-                  <Card.Title className="text-center text-uppercase">{item.nombre}</Card.Title>
-                  <Card.Text className="text-center text-muted">{item.descripcion}</Card.Text>
+              <Card className="shadow-lg rounded-4 border-0 card-hover">
+                <Card.Img variant="top" src={item.imagepath} className="rounded-top-4" />
+                <Card.Body className="text-center">
+                  <Card.Title className="fw-bold text-dark">{item.nombre}</Card.Title>
+                  <Card.Text className="text-muted">{item.descripcion}</Card.Text>
                   <div className="d-flex justify-content-between align-items-center">
-                    <span className="text-primary fw-bold">${item.precio}</span>
+                    <span className="text-success fw-bold fs-5">${item.precio}</span>
                     <div className="d-flex align-items-center">
-                      <Button 
-                        variant={item.quantity > 0 ? "primary" : "secondary"} 
+                      <Button
+                        variant="outline-warning"
                         onClick={() => handleQuantityChange(item.id, -1)}
                         disabled={item.quantity <= 0 || cart[item.id]}
+                        className="rounded-circle"
                       >
-                        -
+                        <FaMinus />
                       </Button>
                       <span className="mx-2 fw-bold">{item.quantity || 0}</span>
-                      <Button 
-                        variant="primary" 
+                      <Button
+                        variant="warning"
                         onClick={() => handleQuantityChange(item.id, 1)}
                         disabled={item.quantity >= 3 || cart[item.id]}
+                        className="rounded-circle"
                       >
-                        +
+                        <FaPlus />
                       </Button>
                     </div>
                   </div>
-                  <Button 
-                    variant="primary" 
-                    className="mt-3 w-100" 
+                  <Button
+                    variant="dark"
+                    className="mt-3 w-100 fw-bold"
                     onClick={() => handleAddToCart(item.id)}
                     disabled={cart[item.id]}
                   >
-                    {cart[item.id] ? 'Añadido' : 'Agregar al carrito'}
+                    {cart[item.id] ? "Añadido" : "Agregar al carrito"}
                   </Button>
                 </Card.Body>
               </Card>
@@ -142,12 +142,14 @@ function Catalogo() {
           ))}
         </Row>
 
+        {/* Paginación */}
         <Pagination className="justify-content-center mt-4">
-          {[...Array(totalPages).keys()].map(number => (
-            <Pagination.Item 
-              key={number + 1} 
-              active={number + 1 === currentPage} 
+          {[...Array(totalPages).keys()].map((number) => (
+            <Pagination.Item
+              key={number + 1}
+              active={number + 1 === currentPage}
               onClick={() => handlePageChange(number + 1)}
+              className="fw-bold"
             >
               {number + 1}
             </Pagination.Item>

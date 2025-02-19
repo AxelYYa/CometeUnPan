@@ -13,7 +13,9 @@ import Cart from './src/Components/Cart';
 import CreateProductsCategories from './src/pages/Admin/CreateProductsandCategory';
 import OrdersHistory from './src/pages/OrdersHistory';
 import MapComponent from './src/pages/MapPage';
+import Pay from './src/pages/Pay'
 import '/main.css';
+import 'animate.css';
 
 function App() {
   return (
@@ -36,10 +38,11 @@ function App() {
           }
         />
         <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/pedidos" element={<AdminDashboard />} />
         <Route path="/registroempleado" element={<RegisterEmployee />} />
         <Route path="/repartidor" element={<DriverPanel />} />
         <Route path="/seguimiento" element={<Tracking />} />
+        <Route path="/Pago" element={<Pay/>}/>
         <Route
           path="/catalogo"
           element={
