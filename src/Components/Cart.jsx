@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Row, Col, Card, Modal, Form } from 'react-bootstrap';
+import { Button, Row, Col, Card, Modal, Form, Alert, Spinner } from 'react-bootstrap';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import NavbarComponent from '/src/Components/Navbar';
 import MapSelector from '/src/Components/MapSelector';
 import '/main.css';
+
+const stripePromise = loadStripe('pk_test_51QRqFLK2OoTqVpjsGusZyEMIl2PjZcbSLF5Kbog1UO2tDImcTgDwcxpG9DY1OIJlkjGwAjcNdYNV2IwdxBM8wU2900RwQSlGT6');
 
 function Cart() {
   const [cart, setCart] = useState(() => {
@@ -14,6 +18,10 @@ function Cart() {
   const [address, setAddress] = useState('');
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [clientSecret, setClientSecret] = useState('');
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -67,40 +75,53 @@ function Cart() {
 
   const cartItems = items.filter(item => cart[item.id]);
 
-  const handleShowModal = () => setShowModal(true);
+  const handleShowModal = async () => {
+    setShowModal(true);
+    try {
+      const response = await fetch('http://localhost:3000/stripe/create-payment-intent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ amount: calculateTotalAmount() })
+      });
+      const data = await response.json();
+      setClientSecret(data.clientSecret);
+    } catch (error) {
+      console.error('Error creating payment intent:', error);
+    }
+  };
+
   const handleCloseModal = () => setShowModal(false);
 
   const handleAddressChange = (e) => setAddress(e.target.value);
 
-  const handleRealizarPedido = async () => {
-    if (!user) {
-      alert('Debes iniciar sesión para realizar un pedido');
-      return;
-    }
+  const handleSelectLocation = (location) => {
+    setSelectedLocation(location);
+    setAddress(location.address);
+  };
 
-    const pedido = {
-      fecha_realizacion: new Date(),
-      clienteId: user.id,
-      direccion: address,
-      estado_envio: 'Pendiente',
-      estado_pago: 'Pendiente',
-      forma_pagoId: 1,
-      detalles: cartItems.map(item => ({
-        productoId: item.id,
-        cantidad: cart[item.id],
-        precio: item.precio
-      }))
-    };
+  const calculateTotalAmount = () => {
+    return cartItems.reduce((total, item) => total + item.precio * cart[item.id], 0) * 100; // Convert to cents
+  };
 
+  const handlePaymentSuccess = async (paymentIntentId) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:3000/pedidos', {
+      const response = await fetch('http://localhost:3000/stripe/payment-success', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'x-access-token': token
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify(pedido)
+        body: JSON.stringify({
+          paymentIntentId,
+          direccion: address,
+          detalles: cartItems.map(item => ({
+            productoId: item.id,
+            cantidad: cart[item.id],
+            precio: item.precio
+          })),
+          userId: user.id
+        })
       });
 
       if (response.ok) {
@@ -118,9 +139,66 @@ function Cart() {
     }
   };
 
-  const handleSelectLocation = (location) => {
-    setSelectedLocation(location);
-    setAddress(location.address);
+  const CheckoutForm = () => {
+    const stripe = useStripe();
+    const elements = useElements();
+
+    const handleSubmit = async (event) => {
+      event.preventDefault();
+
+      if (!stripe || !elements) {
+        return; // Stripe.js aún no se ha cargado
+      }
+
+      setLoading(true);
+      setError('');
+      setSuccessMessage('');
+
+      try {
+        const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement),
+          },
+        });
+
+        if (stripeError) {
+          setError(stripeError.message);
+        } else if (paymentIntent.status === 'succeeded') {
+          setSuccessMessage('Pago exitoso!');
+          await handlePaymentSuccess(paymentIntent.id);
+        }
+      } catch (error) {
+        setError('Error al procesar el pago.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    return (
+      <form onSubmit={handleSubmit}>
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#424770',
+                '::placeholder': {
+                  color: '#aab7c4',
+                },
+              },
+              invalid: {
+                color: '#9e2146',
+              },
+            },
+          }}
+        />
+        <Button type="submit" variant="success" className="w-100 mt-3" disabled={!stripe || loading}>
+          {loading ? <Spinner animation="border" size="sm" /> : 'Pagar'}
+        </Button>
+        {error && <Alert variant="danger" className="mt-3">{error}</Alert>}
+        {successMessage && <Alert variant="success" className="mt-3">{successMessage}</Alert>}
+      </form>
+    );
   };
 
   return (
@@ -238,6 +316,11 @@ function Cart() {
               <div className="mt-3 w-100">
                 <MapSelector onSelectLocation={handleSelectLocation} />
               </div>
+              <div className="mt-3 w-100">
+                <Elements stripe={stripePromise}>
+                  <CheckoutForm />
+                </Elements>
+              </div>
             </div>
           ) : (
             <p className="text-center text-brown">No hay productos en el carrito.</p>
@@ -246,9 +329,6 @@ function Cart() {
         <Modal.Footer style={{ backgroundColor: '#f4e1d2', border: 'none' }}>
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar
-          </Button>
-          <Button variant="primary" onClick={handleRealizarPedido} style={{ backgroundColor: '#8B4513', border: 'none' }}>
-            Realizar Pedido
           </Button>
         </Modal.Footer>
       </Modal>

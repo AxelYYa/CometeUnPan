@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form, Button, Card, Container } from 'react-bootstrap';
-import bgImage from '/src/assets/banner3.jpg'; // Imagen de fondo de panadería
-import logo from '/src/assets/logo1.png'; // Logo de la panadería
+import bgImage from '/src/assets/banner3.jpg';
+import logo from '/src/assets/logo1.png';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -23,8 +23,8 @@ const Login = () => {
       if (response.ok) {
         const data = await response.json();
         console.log('Iniciando sesión con:', data);
-        localStorage.setItem('token', data.accessToken); // Almacenar el token JWT
-        navigate('/catalogo'); // Redirigir a la página del catálogo
+        localStorage.setItem('token', data.accessToken);
+        navigate('/');
       } else {
         const errorData = await response.json();
         alert('Error en el inicio de sesión: ' + errorData.message);

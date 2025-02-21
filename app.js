@@ -11,6 +11,7 @@ const categoriasRoutes = require('./routes/categorias');
 const productosRoutes = require('./routes/productos');
 const pedidosRoutes = require('./routes/pedidos');
 const pedidosPublicRouter = require('./routes/pedidosPublic');
+const stripeRoutes = require('./routes/stripe');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -41,6 +42,7 @@ app.use('/categorias', categoriasRoutes);
 app.use('/productos', productosRoutes);
 app.use('/pedidos', pedidosRoutes);
 app.use('/pedidos-public', pedidosPublicRouter);
+app.use('/stripe', stripeRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
