@@ -12,9 +12,12 @@ const productosRoutes = require('./routes/productos');
 const pedidosRoutes = require('./routes/pedidos');
 const pedidosPublicRouter = require('./routes/pedidosPublic');
 const stripeRoutes = require('./routes/stripe');
+const { swaggerUi, specs } = require('./config/swagger');
 
 app.use(cors());
 app.use(bodyParser.json());
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use((req, res, next) => {
   console.log(`Solicitud para: ${req.url}`);
