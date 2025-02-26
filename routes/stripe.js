@@ -6,14 +6,14 @@ const stripeController = require('../controllers/stripeController');
  * @swagger
  * tags:
  *   name: Stripe
- *   description: Stripe payment endpoints
+ *   description: Endpoints para pagos con Stripe
  */
 
 /**
  * @swagger
  * /stripe/create-payment-intent:
  *   post:
- *     summary: Create a payment intent
+ *     summary: Crear una intención de pago
  *     tags: [Stripe]
  *     requestBody:
  *       required: true
@@ -26,9 +26,9 @@ const stripeController = require('../controllers/stripeController');
  *                 type: integer
  *     responses:
  *       200:
- *         description: Payment intent created successfully
+ *         description: Intención de pago creada exitosamente
  *       500:
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.post('/create-payment-intent', stripeController.createPaymentIntent);
 
@@ -36,7 +36,7 @@ router.post('/create-payment-intent', stripeController.createPaymentIntent);
  * @swagger
  * /stripe/payment-success:
  *   post:
- *     summary: Handle payment success
+ *     summary: Manejar el éxito del pago
  *     tags: [Stripe]
  *     requestBody:
  *       required: true
@@ -64,9 +64,9 @@ router.post('/create-payment-intent', stripeController.createPaymentIntent);
  *                 type: integer
  *     responses:
  *       201:
- *         description: Order created successfully
+ *         description: Orden creada exitosamente
  *       500:
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.post('/payment-success', stripeController.handlePaymentSuccess);
 

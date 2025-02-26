@@ -1,21 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/authController');
-const verifyToken = require('../middleware/authMiddleware');
+const controladorAutenticacion = require('../controllers/authController');
+const verificarToken = require('../middleware/authMiddleware');
 
 /**
  * @swagger
  * tags:
- *   name: Auth
- *   description: Authentication related endpoints
+ *   name: Autenticación
+ *   description: Endpoints relacionados con la autenticación
  */
 
 /**
  * @swagger
- * /auth/register:
+ * /auth/registrar:
  *   post:
- *     summary: Register a new user
- *     tags: [Auth]
+ *     summary: Registrar un nuevo usuario
+ *     tags: [Autenticación]
  *     requestBody:
  *       required: true
  *       content:
@@ -23,24 +23,24 @@ const verifyToken = require('../middleware/authMiddleware');
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               usuario:
  *                 type: string
- *               password:
+ *               contraseña:
  *                 type: string
  *     responses:
  *       200:
- *         description: User registered successfully
+ *         description: Usuario registrado exitosamente
  *       400:
- *         description: Bad request
+ *         description: Solicitud incorrecta
  */
-router.post('/register', authController.register);
+router.post('/registrar', controladorAutenticacion.register);
 
 /**
  * @swagger
- * /auth/registerEmployee:
+ * /auth/registrarEmpleado:
  *   post:
- *     summary: Register a new employee
- *     tags: [Auth]
+ *     summary: Registrar un nuevo empleado
+ *     tags: [Autenticación]
  *     requestBody:
  *       required: true
  *       content:
@@ -48,24 +48,24 @@ router.post('/register', authController.register);
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               usuario:
  *                 type: string
- *               password:
+ *               contraseña:
  *                 type: string
  *     responses:
  *       200:
- *         description: Employee registered successfully
+ *         description: Empleado registrado exitosamente
  *       400:
- *         description: Bad request
+ *         description: Solicitud incorrecta
  */
-router.post('/registerEmployee', authController.registerEmployee);
+router.post('/registrarEmpleado', controladorAutenticacion.registerEmployee);
 
 /**
  * @swagger
- * /auth/login:
+ * /auth/iniciarSesion:
  *   post:
- *     summary: Login a user
- *     tags: [Auth]
+ *     summary: Iniciar sesión
+ *     tags: [Autenticación]
  *     requestBody:
  *       required: true
  *       content:
@@ -73,32 +73,32 @@ router.post('/registerEmployee', authController.registerEmployee);
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               usuario:
  *                 type: string
- *               password:
+ *               contraseña:
  *                 type: string
  *     responses:
  *       200:
- *         description: User logged in successfully
+ *         description: Usuario autenticado exitosamente
  *       400:
- *         description: Bad request
+ *         description: Solicitud incorrecta
  */
-router.post('/login', authController.login);
+router.post('/iniciarSesion', controladorAutenticacion.login);
 
 /**
  * @swagger
- * /auth/me:
+ * /auth/yo:
  *   get:
- *     summary: Get current user
- *     tags: [Auth]
+ *     summary: Obtener usuario actual
+ *     tags: [Autenticación]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Current user data
+ *         description: Datos del usuario actual
  *       401:
- *         description: Unauthorized
+ *         description: No autorizado
  */
-router.get('/me', verifyToken, authController.getMe);
+router.get('/yo', verificarToken, controladorAutenticacion.getMe);
 
 module.exports = router;

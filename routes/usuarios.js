@@ -7,14 +7,14 @@ const authMiddleware = require('../middleware/auth');
  * @swagger
  * tags:
  *   name: Usuarios
- *   description: User management endpoints
+ *   description: Endpoints para la gestión de usuarios
  */
 
 /**
  * @swagger
  * /usuarios:
  *   post:
- *     summary: Create a new user
+ *     summary: Crear un nuevo usuario
  *     tags: [Usuarios]
  *     requestBody:
  *       required: true
@@ -29,9 +29,9 @@ const authMiddleware = require('../middleware/auth');
  *                 type: string
  *     responses:
  *       200:
- *         description: User created successfully
+ *         description: Usuario creado exitosamente
  *       400:
- *         description: Bad request
+ *         description: Solicitud incorrecta
  */
 router.post('/', authMiddleware, usuariosController.createUsuario);
 
@@ -39,13 +39,13 @@ router.post('/', authMiddleware, usuariosController.createUsuario);
  * @swagger
  * /usuarios:
  *   get:
- *     summary: Get all users
+ *     summary: Obtener todos los usuarios
  *     tags: [Usuarios]
  *     responses:
  *       200:
- *         description: List of users
+ *         description: Lista de usuarios
  *       401:
- *         description: Unauthorized
+ *         description: No autorizado
  */
 router.get('/', authMiddleware, usuariosController.getUsuarios);
 

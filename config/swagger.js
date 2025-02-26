@@ -12,11 +12,14 @@ const options = {
     servers: [
       {
         url: 'http://localhost:3000',
+        description: 'Servidor local',
       },
     ],
   },
   apis: ['./routes/*.js', './models/*.js'], // Archivos donde se encuentran las rutas y modelos
 };
+
+
 
 const specs = swaggerJsdoc(options);
 

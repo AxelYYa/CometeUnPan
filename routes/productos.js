@@ -6,14 +6,14 @@ const productosController = require('../controllers/productosController');
  * @swagger
  * tags:
  *   name: Productos
- *   description: Product management endpoints
+ *   description: Endpoints para la gestión de productos
  */
 
 /**
  * @swagger
  * /productos:
  *   post:
- *     summary: Create a new product
+ *     summary: Crear un nuevo producto
  *     tags: [Productos]
  *     requestBody:
  *       required: true
@@ -30,9 +30,9 @@ const productosController = require('../controllers/productosController');
  *                 type: number
  *     responses:
  *       200:
- *         description: Product created successfully
+ *         description: Producto creado exitosamente
  *       400:
- *         description: Bad request
+ *         description: Solicitud incorrecta
  */
 router.post('/', productosController.createProducto);
 
@@ -40,13 +40,13 @@ router.post('/', productosController.createProducto);
  * @swagger
  * /productos:
  *   get:
- *     summary: Get all products
+ *     summary: Obtener todos los productos
  *     tags: [Productos]
  *     responses:
  *       200:
- *         description: List of products
+ *         description: Lista de productos
  *       500:
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.get('/', productosController.getProductos);
 

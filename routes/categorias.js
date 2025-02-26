@@ -6,14 +6,14 @@ const categoriasController = require('../controllers/categoriasController');
  * @swagger
  * tags:
  *   name: Categorias
- *   description: Category management endpoints
+ *   description: Endpoints para la gestión de categorías
  */
 
 /**
  * @swagger
  * /categorias:
  *   post:
- *     summary: Create a new category
+ *     summary: Crear una nueva categoría
  *     tags: [Categorias]
  *     requestBody:
  *       required: true
@@ -26,9 +26,9 @@ const categoriasController = require('../controllers/categoriasController');
  *                 type: string
  *     responses:
  *       200:
- *         description: Category created successfully
+ *         description: Categoría creada con éxito
  *       400:
- *         description: Bad request
+ *         description: Solicitud incorrecta
  */
 router.post('/', categoriasController.createCategoria);
 
@@ -36,13 +36,13 @@ router.post('/', categoriasController.createCategoria);
  * @swagger
  * /categorias:
  *   get:
- *     summary: Get all categories
+ *     summary: Obtener todas las categorías
  *     tags: [Categorias]
  *     responses:
  *       200:
- *         description: List of categories
+ *         description: Lista de categorías
  *       500:
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.get('/', categoriasController.getCategorias);
 

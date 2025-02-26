@@ -7,14 +7,14 @@ const verifyToken = require('../middleware/authMiddleware');
  * @swagger
  * tags:
  *   name: Pedidos
- *   description: Order management endpoints
+ *   description: Endpoints para la gestión de pedidos
  */
 
 /**
  * @swagger
  * /pedidos:
  *   post:
- *     summary: Create a new order
+ *     summary: Crear un nuevo pedido
  *     tags: [Pedidos]
  *     security:
  *       - bearerAuth: []
@@ -42,9 +42,9 @@ const verifyToken = require('../middleware/authMiddleware');
  *                       type: number
  *     responses:
  *       201:
- *         description: Order created successfully
+ *         description: Pedido creado con éxito
  *       401:
- *         description: Unauthorized
+ *         description: No autorizado
  */
 router.post('/', pedidosController.createPedido);
 
@@ -52,7 +52,7 @@ router.post('/', pedidosController.createPedido);
  * @swagger
  * /pedidos/{id}/aceptar:
  *   put:
- *     summary: Accept an order
+ *     summary: Aceptar un pedido
  *     tags: [Pedidos]
  *     security:
  *       - bearerAuth: []
@@ -62,12 +62,12 @@ router.post('/', pedidosController.createPedido);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Order ID
+ *         description: ID del pedido
  *     responses:
  *       200:
- *         description: Order accepted successfully
+ *         description: Pedido aceptado con éxito
  *       401:
- *         description: Unauthorized
+ *         description: No autorizado
  */
 router.put('/:id/aceptar', verifyToken, pedidosController.aceptarPedido);
 
@@ -75,7 +75,7 @@ router.put('/:id/aceptar', verifyToken, pedidosController.aceptarPedido);
  * @swagger
  * /pedidos/{id}/entregar:
  *   put:
- *     summary: Deliver an order
+ *     summary: Entregar un pedido
  *     tags: [Pedidos]
  *     security:
  *       - bearerAuth: []
@@ -85,12 +85,12 @@ router.put('/:id/aceptar', verifyToken, pedidosController.aceptarPedido);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Order ID
+ *         description: ID del pedido
  *     responses:
  *       200:
- *         description: Order delivered successfully
+ *         description: Pedido entregado con éxito
  *       401:
- *         description: Unauthorized
+ *         description: No autorizado
  */
 router.put('/:id/entregar', verifyToken, pedidosController.entregarPedido);
 
@@ -98,7 +98,7 @@ router.put('/:id/entregar', verifyToken, pedidosController.entregarPedido);
  * @swagger
  * /pedidos/{id}/procesar:
  *   put:
- *     summary: Process an order
+ *     summary: Procesar un pedido
  *     tags: [Pedidos]
  *     parameters:
  *       - in: path
@@ -106,12 +106,12 @@ router.put('/:id/entregar', verifyToken, pedidosController.entregarPedido);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Order ID
+ *         description: ID del pedido
  *     responses:
  *       200:
- *         description: Order processed successfully
+ *         description: Pedido procesado con éxito
  *       500:
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.put('/:id/procesar', pedidosController.procesarPedido);
 
@@ -119,7 +119,7 @@ router.put('/:id/procesar', pedidosController.procesarPedido);
  * @swagger
  * /pedidos/{id}/revertir:
  *   put:
- *     summary: Revert an order
+ *     summary: Revertir un pedido
  *     tags: [Pedidos]
  *     security:
  *       - bearerAuth: []
@@ -129,12 +129,12 @@ router.put('/:id/procesar', pedidosController.procesarPedido);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Order ID
+ *         description: ID del pedido
  *     responses:
  *       200:
- *         description: Order reverted successfully
+ *         description: Pedido revertido con éxito
  *       401:
- *         description: Unauthorized
+ *         description: No autorizado
  */
 router.put('/:id/revertir', verifyToken, pedidosController.revertirPedido);
 
@@ -142,13 +142,13 @@ router.put('/:id/revertir', verifyToken, pedidosController.revertirPedido);
  * @swagger
  * /pedidos/repartidor:
  *   get:
- *     summary: Get orders for delivery
+ *     summary: Obtener pedidos para entrega
  *     tags: [Pedidos]
  *     responses:
  *       200:
- *         description: List of orders for delivery
+ *         description: Lista de pedidos para entrega
  *       500:
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.get('/repartidor', pedidosController.getPedidosRepartidor);
 
@@ -156,13 +156,13 @@ router.get('/repartidor', pedidosController.getPedidosRepartidor);
  * @swagger
  * /pedidos:
  *   get:
- *     summary: Get all orders
+ *     summary: Obtener todos los pedidos
  *     tags: [Pedidos]
  *     responses:
  *       200:
- *         description: List of orders
+ *         description: Lista de pedidos
  *       500:
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.get('/', pedidosController.getAllPedidos);
 
@@ -170,7 +170,7 @@ router.get('/', pedidosController.getAllPedidos);
  * @swagger
  * /pedidos/{id}/enpuerta:
  *   put:
- *     summary: Mark an order as at the door
+ *     summary: Marcar un pedido como en la puerta
  *     tags: [Pedidos]
  *     parameters:
  *       - in: path
@@ -178,12 +178,12 @@ router.get('/', pedidosController.getAllPedidos);
  *         schema:
  *           type: integer
  *         required: true
- *         description: Order ID
+ *         description: ID del pedido
  *     responses:
  *       200:
- *         description: Order marked as at the door successfully
+ *         description: Pedido marcado como en la puerta con éxito
  *       500:
- *         description: Internal server error
+ *         description: Error interno del servidor
  */
 router.put('/:id/enpuerta', pedidosController.marcarComoEnPuerta);
 
