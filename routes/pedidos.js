@@ -46,7 +46,7 @@ const verifyToken = require('../middleware/authMiddleware');
  *       401:
  *         description: Unauthorized
  */
-router.post('/', verifyToken, pedidosController.createPedido);
+router.post('/', pedidosController.createPedido);
 
 /**
  * @swagger

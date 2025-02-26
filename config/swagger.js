@@ -7,7 +7,7 @@ const options = {
     info: {
       title: 'CometeUnPan API',
       version: '1.0.0',
-      description: 'API documentation for CometeUnPan project',
+      description: 'Documentación de APIs de CómeteUnPan',
     },
     servers: [
       {
